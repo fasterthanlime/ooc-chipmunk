@@ -1,4 +1,4 @@
-use chipmunk
+use chipmunk, math
 
 CpFloat: cover from Double extends Double
 
@@ -14,10 +14,33 @@ CpMat2x2: cover from cpMat2x2 {
 CpTimestamp: cover from cpTimestamp extends UInt
 
 cpv: extern func (x, y: CpFloat) -> CpVect
+cpvzero: extern CpVect
 
-CpBody: cover from cpBody {
+cpMomentForCircle: extern func (mass: CpFloat, radius1: CpFloat, radius2: CpFloat, offset: CpVect) -> CpFloat 
 
-    new: extern(cpBodyNew) func (mass: CpFloat, momentum: CpFloat) -> This
+cpAreaForCircle: extern func (radius1: CpFloat, radius2: CpFloat) -> CpFloat 
+
+cpMomentForSegment: extern func (mass: CpFloat, a: CpVect, b: CpVect) -> CpFloat
+
+cpAreaForSegment: extern func (a: CpVect, b: CpVect, radius: CpFloat) -> CpFloat
+
+cpMomentForPoly: extern func (mass: CpFloat, numVerts: Int, verts: CpVect*, offset: CpVect) -> CpFloat
+
+cpAreaForPoly: extern func (numVerts: Int, verts: CpVect*) -> CpFloat
+
+cpCentroidForPoly: extern func (numVerts: Int, verts: CpVect*) -> CpVect
+
+cpRecenterPoly: extern func (numVerts: Int, verts: CpVect*)
+
+cpMomentForBox: extern func (mass: CpFloat, width: CpVect, height: CpVect) -> CpFloat
+
+cpMomentForBox2: extern func (mass: CpFloat, box: CpBB) -> CpFloat
+
+cpConvexHull: extern func (count: Int, verts: CpVect*, result: CpVect*, first: Int*, tolerance: CpFloat) -> Int
+
+CpBody: cover from cpBody* {
+
+    new: extern(cpBodyNew) static func (mass: CpFloat, momentum: CpFloat) -> This
 
     free: extern(cpBodyFree) func
 
@@ -58,7 +81,7 @@ CpBody: cover from cpBody {
 
 }
 
-CpSpace: cover from cpSpace {
+CpSpace: cover from cpSpace* {
 
     new: static extern(cpSpaceNew) func -> This
 
@@ -94,6 +117,10 @@ CpSpace: cover from cpSpace {
     getStaticBody: extern(cpSpaceGetStaticBody) func -> CpBody
 
     getCurrentTimeStep: extern(cpSpaceGetCurrentTimeStep) func -> CpFloat
+
+    addBody: extern(cpSpaceAddBody) func (body: CpBody) -> CpBody
+
+    addShape: extern(cpSpaceAddShape) func (shape: CpShape) -> CpShape
 
     step: extern(cpSpaceStep) func (timeStep: CpFloat)
 
@@ -153,9 +180,9 @@ CpSegmentShape: cover from cpSegmentShape* extends CpShape {
 
 }
 
-CpCircleShapeNew: cover from cpCircleShape* extends CpShape {
+CpCircleShape: cover from cpCircleShape* extends CpShape {
 
-    new: static extern(cpCircleCircleNew) func (body: CpBody, radius: CpFloat, offset: CpVect) -> This
+    new: static extern(cpCircleShapeNew) func (body: CpBody, radius: CpFloat, offset: CpVect) -> This
 
     getOffset: extern(cpCircleShapeGetOffset) func -> CpVect
 
