@@ -3,10 +3,16 @@ before_install:
   - git clone --depth=1 git://github.com/nddrylliog/rock.git 
   - (cd rock && make -s quick-rescue)
   - export PATH=$PATH:$PWD/rock/bin
+  - wget http://chipmunk-physics.net/release/ChipmunkLatest.tgz -O - | tar xz
+  - mkdir prefix
+  - cd Chipmunk-*
+  - cmake -DCMAKE_INSTALL_PREFIX=../prefix -DCMAKE_PREFIX_PATH=../prefix .
+  - make install -j
+  - cd ..
 
 script:
   - export OOC_LIBS=$PWD
   - cd samples
-# - mkdir -p travis
-# - rock -v example -o=travis/example && travis/example
+  - mkdir -p travis
+  - rock -v hello -o=travis/hello -L../prefix -I../prefix && travis/hello
 
