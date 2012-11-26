@@ -1,7 +1,7 @@
-Name: ooc-chipmunk
+Name: chipmunk
 Version: 6.1.2
 Description: Chipmunk Game Dynamics
-Includes: chipmunk.h
+Includes: chipmunk/chipmunk.h
 Libs: -lchipmunk
 SourcePath: source
 
