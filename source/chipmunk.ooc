@@ -21,6 +21,41 @@ CpBody: cover from cpBody {
 
     free: extern(cpBodyFree) func
 
+    getMass: extern(cpBodyGetMass) func -> CpFloat
+    setMass: extern(cpBodySetMass) func (CpFloat)
+
+    getMoment: extern(cpBodyGetMoment) func -> CpFloat
+    setMoment: extern(cpBodySetMoment) func (CpFloat)
+
+    getPos: extern(cpBodyGetPos) func -> CpVect
+    setPos: extern(cpBodySetPos) func (CpVect)
+
+    getVel: extern(cpBodyGetVel) func -> CpVect
+    setVel: extern(cpBodySetVel) func (CpVect)
+
+    getForce: extern(cpBodyGetForce) func -> CpVect
+    setForce: extern(cpBodySetForce) func (CpVect)
+
+    getAngle: extern(cpBodyGetAngle) func -> CpFloat
+    setAngle: extern(cpBodySetAngle) func (CpFloat)
+
+    getAngVel: extern(cpBodyGetAngVel) func -> CpFloat
+    setAngVel: extern(cpBodySetAngVel) func (CpFloat)
+
+    getTorque: extern(cpBodyGetTorque) func -> CpFloat
+    setTorque: extern(cpBodySetTorque) func (CpFloat)
+
+    getRot: extern(cpBodyGetRot) func -> CpVect
+
+    getVelLimit: extern(cpBodyGetVelLimit) func -> CpFloat
+    setVelLimit: extern(cpBodySetVelLimit) func (CpFloat)
+
+    getAngVelLimit: extern(cpBodyGetAngVelLimit) func -> CpFloat
+    setAngVelLimit: extern(cpBodySetAngVelLimit) func (CpFloat)
+
+    getUserData: extern(cpBodyGetUserData) func -> Pointer
+    setUserData: extern(cpBodySetUserData) func (Pointer)
+
 }
 
 CpSpace: cover from cpSpace {
@@ -59,6 +94,8 @@ CpSpace: cover from cpSpace {
     getStaticBody: extern(cpSpaceGetStaticBody) func -> CpBody
 
     getCurrentTimeStep: extern(cpSpaceGetCurrentTimeStep) func -> CpFloat
+
+    step: extern(cpSpaceStep) func (timeStep: CpFloat)
 
 }
 
@@ -113,6 +150,16 @@ CpShape: cover from cpShape* {
 CpSegmentShape: cover from cpSegmentShape* extends CpShape {
 
     new: static extern(cpSegmentShapeNew) func (body: CpBody, a: CpVect, b: CpVect, radius: CpFloat) -> This
+
+}
+
+CpCircleShapeNew: cover from cpCircleShape* extends CpShape {
+
+    new: static extern(cpCircleCircleNew) func (body: CpBody, radius: CpFloat, offset: CpVect) -> This
+
+    getOffset: extern(cpCircleShapeGetOffset) func -> CpVect
+
+    getRadius: extern(cpCircleShapeGetRadius) func -> CpFloat
 
 }
 
