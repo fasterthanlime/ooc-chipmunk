@@ -14,5 +14,5 @@ script:
   - export OOC_LIBS=$PWD
   - cd samples
   - mkdir -p travis
-  - rock -v hello -o=travis/hello -L../prefix/lib -I../prefix/include && travis/hello
+  - rock -v hello -o=travis/hello -L../prefix/lib -I../prefix/include && LD_LIBRARY_PATH=../prefix travis/hello
 
