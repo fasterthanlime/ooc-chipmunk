@@ -15,21 +15,19 @@ CpTimestamp: cover from cpTimestamp extends UInt
 
 cpv: extern func (x, y: CpFloat) -> CpVect
 
-CpBodyT: cover from cpBody {
-    
-}
+CpBody: cover from cpBody {
 
-CpBody: cover from CpBodyT* {
+    new: extern(cpBodyNew) func (mass: CpFloat, momentum: CpFloat) -> This
+
+    free: extern(cpBodyFree) func
 
 }
 
 CpSpace: cover from cpSpace {
 
-    /// Destroy a cpSpace.
     new: static extern(cpSpaceNew) func -> This
 
-    /// Destroy and free a cpSpace.
-    destroy: extern(cpSpaceDestroy) func
+    free: extern(cpSpaceFree) func
 
     getIterations: extern(cpSpaceGetIterations) func -> Int
     setIterations: extern(cpSpaceSetIterations) func (Int)
@@ -64,9 +62,57 @@ CpSpace: cover from cpSpace {
 
 }
 
-CpSegmentShape: cover from cpSegmentShape* {
+CpBB: cover from cpBB {
 
-    new: static extern(cpSegmentShapeNew) func -> This
+}
+
+CpCollisionType: cover from cpCollisionType {
+
+}
+
+CpGroup: cover from cpGroup {
+
+}
+
+CpLayers: cover from cpLayers {
+
+}
+
+CpShape: cover from cpShape* {
+
+    free: extern(cpShapeFree) func
+
+    getBB: extern(cpShapeGetBB) func -> CpBB
+
+    getSensor: extern(cpShapeGetSensor) func -> Bool
+    setSensor: extern(cpShapeSetSensor) func(Bool)
+
+    getElasticity: extern(cpShapeGetElasticity) func -> CpFloat
+    setElasticity: extern(cpShapeSetElasticity) func(CpFloat)
+
+    getFriction: extern(cpShapeGetFriction) func -> CpFloat
+    setFriction: extern(cpShapeSetFriction) func(CpFloat)
+
+    getSurfaceVelocity: extern(cpShapeGetSurfaceVelocity) func -> CpVect
+    setSurfaceVelocity: extern(cpShapeSetSurfaceVelocity) func(CpVect)
+
+    getUserData: extern(cpShapeGetSensor) func -> Pointer
+    setUserData: extern(cpShapeSetSensor) func(Pointer)
+
+    getCollisionType: extern(cpShapeGetSensor) func -> CpCollisionType
+    setCollisionType: extern(cpShapeSetSensor) func(CpCollisionType)
+
+    getGroup: extern(cpShapeGetSensor) func -> CpGroup
+    setGroup: extern(cpShapeSetSensor) func(CpGroup)
+
+    getLayers: extern(cpShapeGetSensor) func -> CpLayers
+    setLayers: extern(cpShapeSetSensor) func(CpLayers)
+
+}
+
+CpSegmentShape: cover from cpSegmentShape* extends CpShape {
+
+    new: static extern(cpSegmentShapeNew) func (body: CpBody, a: CpVect, b: CpVect, radius: CpFloat) -> This
 
 }
 
