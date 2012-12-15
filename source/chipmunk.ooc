@@ -1,5 +1,7 @@
 use chipmunk, math
 
+include chipmunk/chipmunk
+
 CpFloat: cover from Double extends Double
 
 CpVect: cover from cpVect {
@@ -32,7 +34,7 @@ cpCentroidForPoly: extern func (numVerts: Int, verts: CpVect*) -> CpVect
 
 cpRecenterPoly: extern func (numVerts: Int, verts: CpVect*)
 
-cpMomentForBox: extern func (mass: CpFloat, width: CpVect, height: CpVect) -> CpFloat
+cpMomentForBox: extern func (mass: CpFloat, width: CpFloat, height: CpFloat) -> CpFloat
 
 cpMomentForBox2: extern func (mass: CpFloat, box: CpBB) -> CpFloat
 
@@ -187,6 +189,12 @@ CpCircleShape: cover from cpCircleShape* extends CpShape {
     getOffset: extern(cpCircleShapeGetOffset) func -> CpVect
 
     getRadius: extern(cpCircleShapeGetRadius) func -> CpFloat
+
+}
+
+CpBoxShape: cover from cpPolyShape* extends CpShape {
+
+    new: static extern(cpBoxShapeNew) func (body: CpBody, width: CpFloat, height: CpFloat) -> This
 
 }
 
