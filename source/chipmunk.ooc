@@ -95,6 +95,9 @@ CpSpace: cover from cpSpace* {
     getGravity: extern(cpSpaceGetGravity) func -> CpVect
     setGravity: extern(cpSpaceSetGravity) func (CpVect)
 
+    getDamping: extern(cpSpaceGetDamping) func -> CpFloat
+    setDamping: extern(cpSpaceSetDamping) func (CpFloat)
+
     getIdleSpeedThreshold: extern(cpSpaceGetIdleSpeedThreshold) func -> CpFloat
     setIdleSpeedThreshold: extern(cpSpaceSetIdleSpeedThreshold) func (CpFloat)
 
@@ -124,6 +127,8 @@ CpSpace: cover from cpSpace* {
 
     addShape: extern(cpSpaceAddShape) func (shape: CpShape) -> CpShape
 
+    addConstraint: extern(cpSpaceAddConstraint) func (constraint: CpConstraint) -> CpConstraint
+
     step: extern(cpSpaceStep) func (timeStep: CpFloat)
 
 }
@@ -136,11 +141,11 @@ CpCollisionType: cover from cpCollisionType {
 
 }
 
-CpGroup: cover from cpGroup {
+CpGroup: cover from UInt extends UInt {
 
 }
 
-CpLayers: cover from cpLayers {
+CpLayers: cover from UInt extends UInt {
 
 }
 
@@ -162,17 +167,17 @@ CpShape: cover from cpShape* {
     getSurfaceVelocity: extern(cpShapeGetSurfaceVelocity) func -> CpVect
     setSurfaceVelocity: extern(cpShapeSetSurfaceVelocity) func(CpVect)
 
-    getUserData: extern(cpShapeGetSensor) func -> Pointer
-    setUserData: extern(cpShapeSetSensor) func(Pointer)
+    getUserData: extern(cpShapeGetUserData) func -> Pointer
+    setUserData: extern(cpShapeSetUserData) func(Pointer)
 
-    getCollisionType: extern(cpShapeGetSensor) func -> CpCollisionType
-    setCollisionType: extern(cpShapeSetSensor) func(CpCollisionType)
+    getCollisionType: extern(cpShapeGetCollisionType) func -> CpCollisionType
+    setCollisionType: extern(cpShapeSetCollisionType) func(CpCollisionType)
 
-    getGroup: extern(cpShapeGetSensor) func -> CpGroup
-    setGroup: extern(cpShapeSetSensor) func(CpGroup)
+    getGroup: extern(cpShapeGetGroup) func -> CpGroup
+    setGroup: extern(cpShapeSetGroup) func(CpGroup)
 
-    getLayers: extern(cpShapeGetSensor) func -> CpLayers
-    setLayers: extern(cpShapeSetSensor) func(CpLayers)
+    getLayers: extern(cpShapeGetLayers) func -> CpLayers
+    setLayers: extern(cpShapeSetLayers) func(CpLayers)
 
 }
 
@@ -195,6 +200,13 @@ CpCircleShape: cover from cpCircleShape* extends CpShape {
 CpBoxShape: cover from cpPolyShape* extends CpShape {
 
     new: static extern(cpBoxShapeNew) func (body: CpBody, width: CpFloat, height: CpFloat) -> This
+
+}
+
+CpConstraint: cover from cpConstraint* {
+
+    newPin: static extern(cpPinJointNew) func (a: CpBody, b: CpBody, anchr1: CpVect, anchr2: CpVect) -> This
+    newRotaryLimit: static extern(cpRotaryLimitJointNew) func (a: CpBody, b: CpBody, min: CpFloat, max: CpFloat) -> This
 
 }
 
