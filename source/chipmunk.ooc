@@ -43,6 +43,7 @@ cpConvexHull: extern func (count: Int, verts: CpVect*, result: CpVect*, first: I
 CpBody: cover from cpBody* {
 
     new: extern(cpBodyNew) static func (mass: CpFloat, momentum: CpFloat) -> This
+    newStatic: extern (cpBodyNewStatic) static func -> This
 
     free: extern(cpBodyFree) func
 
@@ -134,6 +135,9 @@ CpSpace: cover from cpSpace* {
 }
 
 CpBB: cover from cpBB {
+    l, b, r, t: extern CpFloat
+
+    new: extern(cpBBNew) static func (l: CpFloat, b: CpFloat, r: CpFloat, t: CpFloat) -> This
 
 }
 
@@ -200,6 +204,7 @@ CpCircleShape: cover from cpCircleShape* extends CpShape {
 CpBoxShape: cover from cpPolyShape* extends CpShape {
 
     new: static extern(cpBoxShapeNew) func (body: CpBody, width: CpFloat, height: CpFloat) -> This
+    new: static extern(cpBoxShapeNew2) func ~fromBB (body: CpBody, box: CpBB) -> This
 
 }
 
