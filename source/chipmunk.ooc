@@ -130,21 +130,27 @@ CpSpace: cover from cpSpace* {
 
     addConstraint: extern(cpSpaceAddConstraint) func (constraint: CpConstraint) -> CpConstraint
 
-    addCollisionHandler: func (handler: CpCollisionHandler) {
+    addCollisionHandler: func (type1: CpCollisionType, type2: CpCollisionType, handler: CpCollisionHandler) {
         cpSpaceAddCollisionHandler(
             this, 
+            type1,
+            type2,
             collisionBeginFuncThunk,
             collisionPreSolveFuncThunk,
             collisionPostSolveFuncThunk,
             collisionSeparateFuncThunk,
             handler
         )
+    }
 
     step: extern(cpSpaceStep) func (timeStep: CpFloat)
 
 }
 
-cpSpaceAddCollisionHandler: extern func (CpSpace, Pointer, Pointer, Pointer, Pointer, Pointer)
+cpSpaceAddCollisionHandler: extern func (CpSpace, CpCollisionType, CpCollisionType, Pointer, Pointer, Pointer, Pointer, Pointer)
+
+CpArbiter: cover from cpArbiter* {
+}
 
 CpCollisionHandler: class {
 
@@ -189,7 +195,7 @@ CpBB: cover from cpBB {
 
 }
 
-CpCollisionType: cover from cpCollisionType {
+CpCollisionType: cover from UInt extends UInt {
 
 }
 
