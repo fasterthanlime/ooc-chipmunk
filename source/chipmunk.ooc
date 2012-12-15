@@ -130,8 +130,56 @@ CpSpace: cover from cpSpace* {
 
     addConstraint: extern(cpSpaceAddConstraint) func (constraint: CpConstraint) -> CpConstraint
 
+    addCollisionHandler: func (handler: CpCollisionHandler) {
+        cpSpaceAddCollisionHandler(
+            this, 
+            collisionBeginFuncThunk,
+            collisionPreSolveFuncThunk,
+            collisionPostSolveFuncThunk,
+            collisionSeparateFuncThunk,
+            handler
+        )
+
     step: extern(cpSpaceStep) func (timeStep: CpFloat)
 
+}
+
+cpSpaceAddCollisionHandler: extern func (CpSpace, Pointer, Pointer, Pointer, Pointer, Pointer)
+
+CpCollisionHandler: class {
+
+    begin: func (arb: CpArbiter, space: CpSpace) {
+        // overload at will!
+    }
+
+    preSolve: func (arb: CpArbiter, space: CpSpace) {
+        // overload at will!
+    }
+
+    postSolve: func (arb: CpArbiter, space: CpSpace) {
+        // overload at will!
+    }
+
+    separate: func (arb: CpArbiter, space: CpSpace) {
+        // overload at will!
+    }
+    
+}
+
+collisionBeginFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+    ch begin(arb, space)
+}
+
+collisionPreSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+    ch preSolve(arb, space)
+}
+
+collisionPostSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+    ch postSolve(arb, space)
+}
+
+collisionSeparateFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+    ch separate(arb, space)
 }
 
 CpBB: cover from cpBB {
