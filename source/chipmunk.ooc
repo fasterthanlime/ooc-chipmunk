@@ -206,7 +206,11 @@ CpBoxShape: cover from cpPolyShape* extends CpShape {
 CpConstraint: cover from cpConstraint* {
 
     newPin: static extern(cpPinJointNew) func (a: CpBody, b: CpBody, anchr1: CpVect, anchr2: CpVect) -> This
+    newPivot: static extern(cpPivotJointNew) func (a: CpBody, b: CpBody, pivot: CpVect) -> This
     newRotaryLimit: static extern(cpRotaryLimitJointNew) func (a: CpBody, b: CpBody, min: CpFloat, max: CpFloat) -> This
+
+    setMaxBias: extern(cpConstraintSetMaxBias) func (value: CpFloat)
+    getMaxBias: extern(cpConstraintGetMaxBias) func -> CpFloat
 
 }
 
