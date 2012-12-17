@@ -145,6 +145,7 @@ CpSpace: cover from cpSpace* {
             handler
         )
     }
+    removeCollisionHandler: extern(cpSpaceRemoveCollisionHandler) func (type1: CpCollisionType, type2: CpCollisionType)
 
     step: extern(cpSpaceStep) func (timeStep: CpFloat)
 
