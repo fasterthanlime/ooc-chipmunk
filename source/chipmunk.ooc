@@ -125,10 +125,13 @@ CpSpace: cover from cpSpace* {
     getCurrentTimeStep: extern(cpSpaceGetCurrentTimeStep) func -> CpFloat
 
     addBody: extern(cpSpaceAddBody) func (body: CpBody) -> CpBody
+    removeBody: extern(cpSpaceRemoveBody) func (constraint: CpBody)
 
     addShape: extern(cpSpaceAddShape) func (shape: CpShape) -> CpShape
+    removeShape: extern(cpSpaceRemoveShape) func (constraint: CpShape)
 
     addConstraint: extern(cpSpaceAddConstraint) func (constraint: CpConstraint) -> CpConstraint
+    removeConstraint: extern(cpSpaceRemoveConstraint) func (constraint: CpConstraint)
 
     addCollisionHandler: func (type1: CpCollisionType, type2: CpCollisionType, handler: CpCollisionHandler) {
         cpSpaceAddCollisionHandler(
@@ -264,11 +267,19 @@ CpBoxShape: cover from cpPolyShape* extends CpShape {
 
 CpConstraint: cover from cpConstraint* {
 
-    newPin: static extern(cpPinJointNew) func (a: CpBody, b: CpBody, anchr1: CpVect, anchr2: CpVect) -> This
     newPivot: static extern(cpPivotJointNew) func (a: CpBody, b: CpBody, pivot: CpVect) -> This
 
     setMaxBias: extern(cpConstraintSetMaxBias) func (value: CpFloat)
     getMaxBias: extern(cpConstraintGetMaxBias) func -> CpFloat
+
+}
+
+CpPinJoint: cover from cpPinJoint* extends CpConstraint {
+
+    new: static extern(cpPinJointNew) func (a: CpBody, b: CpBody, anchr1: CpVect, anchr2: CpVect) -> This
+
+    setDist: extern(cpPinJointSetDist) func (dist: CpFloat)
+    getDist: extern(cpPinJointGetDist) func -> CpFloat
 
 }
 
