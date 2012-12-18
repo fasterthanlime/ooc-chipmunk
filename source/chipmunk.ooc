@@ -154,16 +154,22 @@ CpSpace: cover from cpSpace* {
 cpSpaceAddCollisionHandler: extern func (CpSpace, CpCollisionType, CpCollisionType, Pointer, Pointer, Pointer, Pointer, Pointer)
 
 CpArbiter: cover from cpArbiter* {
+
+    getShapes: extern(cpArbiterGetShapes) func (CpShape*, CpShape*)
+    getBodies: extern(cpArbiterGetBodies) func (CpBody*, CpBody*)
+
 }
 
 CpCollisionHandler: class {
 
-    begin: func (arb: CpArbiter, space: CpSpace) {
+    begin: func (arb: CpArbiter, space: CpSpace) -> Bool {
         // overload at will!
+        true
     }
 
-    preSolve: func (arb: CpArbiter, space: CpSpace) {
+    preSolve: func (arb: CpArbiter, space: CpSpace) -> Bool {
         // overload at will!
+        true
     }
 
     postSolve: func (arb: CpArbiter, space: CpSpace) {
@@ -176,11 +182,11 @@ CpCollisionHandler: class {
     
 }
 
-collisionBeginFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+collisionBeginFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Bool {
     ch begin(arb, space)
 }
 
-collisionPreSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+collisionPreSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Bool {
     ch preSolve(arb, space)
 }
 
