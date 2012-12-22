@@ -17,6 +17,8 @@ CpTimestamp: cover from cpTimestamp extends UInt
 
 cpv: extern func (x, y: CpFloat) -> CpVect
 cpvzero: extern CpVect
+cpvtoangle: extern func (v: CpVect) -> CpFloat
+cpvforangle: extern func (angle: CpFloat) -> CpVect
 
 cpMomentForCircle: extern func (mass: CpFloat, radius1: CpFloat, radius2: CpFloat, offset: CpVect) -> CpFloat 
 
@@ -246,6 +248,8 @@ CpShape: cover from cpShape* {
 
     getLayers: extern(cpShapeGetLayers) func -> CpLayers
     setLayers: extern(cpShapeSetLayers) func(CpLayers)
+
+    update: extern(cpShapeUpdate) func (pos: CpVect, rot: CpVect)
 
 }
 
