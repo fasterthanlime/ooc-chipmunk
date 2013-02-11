@@ -4,5 +4,5 @@ Description: Chipmunk Game Dynamics
 Libs: -lchipmunk
 SourcePath: source
 
-AndroidLibs: libchipmunk
-AndroidIncludePaths: ../libchipmunk/include
+AndroidLibs: c_chipmunk
+AndroidIncludePaths: ../c_chipmunk/include
