@@ -3,6 +3,3 @@ Version: 6.1.2
 Description: Chipmunk Game Dynamics
 Libs: -lchipmunk
 SourcePath: source
-
-AndroidLibs: c_chipmunk
-AndroidIncludePaths: ../c_chipmunk/include
