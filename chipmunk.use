@@ -1,5 +1,13 @@
 Name: chipmunk
 Version: 6.1.2
 Description: Chipmunk Game Dynamics
-Libs: -lchipmunk
 SourcePath: source
+
+version (!android) {
+  Libs: -lchipmunk
+}
+
+version (android) {
+  AndroidLibs: c_chipmunk
+  AndroidIncludePaths: ../c_chipmunk/include
+}
