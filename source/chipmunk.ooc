@@ -160,6 +160,15 @@ CpArbiter: cover from cpArbiter* {
     getShapes: extern(cpArbiterGetShapes) func (CpShape*, CpShape*)
     getBodies: extern(cpArbiterGetBodies) func (CpBody*, CpBody*)
 
+    getElasticity: extern(cpArbiterGetElasticity) func -> CpFloat
+    setElasticity: extern(cpArbiterSetElasticity) func (CpFloat)
+
+    getFriction: extern(cpArbiterGetFriction) func -> CpFloat
+    setFriction: extern(cpArbiterSetFriction) func (CpFloat)
+
+    getUserData: extern(cpArbiterGetUserData) func -> Pointer
+    setUserData: extern(cpArbiterSetUserData) func (Pointer)
+
 }
 
 CpCollisionHandler: class {
