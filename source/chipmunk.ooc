@@ -149,6 +149,8 @@ CpSpace: cover from cpSpace* {
     }
     removeCollisionHandler: extern(cpSpaceRemoveCollisionHandler) func (type1: CpCollisionType, type2: CpCollisionType)
 
+    shapeQuery: extern(cpSpaceShapeQuery) func (shape: CpShape, callback: Pointer, userData: Pointer) -> Bool
+
     step: extern(cpSpaceStep) func (timeStep: CpFloat)
 
 }
