@@ -171,6 +171,19 @@ CpArbiter: cover from cpArbiter* {
     getUserData: extern(cpArbiterGetUserData) func -> Pointer
     setUserData: extern(cpArbiterSetUserData) func (Pointer)
 
+    getContactPointSet: extern(cpArbiterGetContactPointSet) func -> CpContactPointSet
+
+}
+
+CpContactPointSet: cover from cpContactPointSet {
+    count: Int
+    points: CpContactPoint*
+}
+
+CpContactPoint: cover {
+    point: CpVect
+    normal: CpVect
+    dist: Float
 }
 
 CpCollisionHandler: class {
@@ -294,6 +307,12 @@ CpConstraint: cover from cpConstraint* {
     setMaxBias: extern(cpConstraintSetMaxBias) func (value: CpFloat)
     getMaxBias: extern(cpConstraintGetMaxBias) func -> CpFloat
 
+    setErrorBias: extern(cpConstraintSetErrorBias) func (value: CpFloat)
+    getErrorBias: extern(cpConstraintGetErrorBias) func -> CpFloat
+
+    setMaxForce: extern(cpConstraintSetMaxForce) func (value: CpFloat)
+    getMaxForce: extern(cpConstraintGetMaxForce) func -> CpFloat
+
 }
 
 CpPinJoint: cover from cpPinJoint* extends CpConstraint {
@@ -302,6 +321,22 @@ CpPinJoint: cover from cpPinJoint* extends CpConstraint {
 
     setDist: extern(cpPinJointSetDist) func (dist: CpFloat)
     getDist: extern(cpPinJointGetDist) func -> CpFloat
+
+}
+
+CpDampedSpring: cover from cpDampedSpring* extends CpConstraint {
+
+    new: static extern(cpDampedSpringNew) func (a: CpBody, b: CpBody, anchr1: CpVect, anchr2: CpVect,
+        restLength: CpFloat, stiffness: CpFloat, damping: CpFloat) -> This
+
+    setRestLength: extern(cpDampedSpringSetRestLength) func (CpFloat)
+    getRestLength: extern(cpDampedSpringSetRestLength) func -> CpFloat
+
+    setStiffness: extern(cpDampedSpringSetStiffness) func (CpFloat)
+    getStiffness: extern(cpDampedSpringSetStiffness) func -> CpFloat
+
+    setDamping: extern(cpDampedSpringSetDamping) func (CpFloat)
+    getDamping: extern(cpDampedSpringSetDamping) func -> CpFloat
 
 }
 
