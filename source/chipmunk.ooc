@@ -2,6 +2,8 @@ use chipmunk, math
 
 include chipmunk/chipmunk
 
+INFINITY: extern Float
+
 CpFloat: cover from Double extends Double
 
 CpVect: cover from cpVect {
@@ -84,6 +86,17 @@ CpBody: cover from cpBody* {
     getUserData: extern(cpBodyGetUserData) func -> Pointer
     setUserData: extern(cpBodySetUserData) func (Pointer)
 
+    _eachArbiter: extern(cpBodyEachArbiter) func (callback: Pointer, data: Pointer)
+    _eachArbiterThunk: static func (body: CpBody, arbiter: CpArbiter, data: Closure*) {
+        f := data@ as Func (CpBody, CpArbiter)
+        f(body, arbiter)
+    }
+
+    eachArbiter: func (f: Func(CpBody, CpArbiter)) {
+        c := f as Closure
+        _eachArbiter(_eachArbiterThunk, c&)
+    }
+
 }
 
 CpSpace: cover from cpSpace* {
@@ -130,7 +143,10 @@ CpSpace: cover from cpSpace* {
     removeBody: extern(cpSpaceRemoveBody) func (constraint: CpBody)
 
     addShape: extern(cpSpaceAddShape) func (shape: CpShape) -> CpShape
+    addStaticShape: extern(cpSpaceAddStaticShape) func (shape: CpShape) -> CpShape
     removeShape: extern(cpSpaceRemoveShape) func (constraint: CpShape)
+
+    reindexShape: extern(cpSpaceReindexShape) func (shape: CpShape)
 
     addConstraint: extern(cpSpaceAddConstraint) func (constraint: CpConstraint) -> CpConstraint
     removeConstraint: extern(cpSpaceRemoveConstraint) func (constraint: CpConstraint)
@@ -263,6 +279,11 @@ CpShape: cover from cpShape* {
 
     getUserData: extern(cpShapeGetUserData) func -> Pointer
     setUserData: extern(cpShapeSetUserData) func(Pointer)
+
+    userDataIs?: func (c: Class) -> Bool {
+        obj: Object = getUserData()
+        return (obj != null && obj instanceOf?(c))
+    }
 
     getCollisionType: extern(cpShapeGetCollisionType) func -> CpCollisionType
     setCollisionType: extern(cpShapeSetCollisionType) func(CpCollisionType)
