@@ -321,6 +321,12 @@ CpBoxShape: cover from cpPolyShape* extends CpShape {
 
 }
 
+CpPolyShape: cover from cpPolyShape* extends CpShape {
+
+    new: static extern(cpPolyShapeNew) func (body: CpBody, numVerts: Int, verts: CpVect*, offset: CpVect) -> This
+
+}
+
 CpConstraint: cover from cpConstraint* {
 
     free: extern(cpConstraintFree) func
