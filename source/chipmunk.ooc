@@ -224,12 +224,12 @@ CpCollisionHandler: class {
     
 }
 
-collisionBeginFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Bool {
-    ch begin(arb, space)
+collisionBeginFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Int {
+    ch begin(arb, space) ? 1 : 0
 }
 
-collisionPreSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Bool {
-    ch preSolve(arb, space)
+collisionPreSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Int {
+    ch preSolve(arb, space) ? 1 : 0
 }
 
 collisionPostSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
