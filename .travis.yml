@@ -1,13 +1,13 @@
 before_install:
-  - sudo apt-get -y -qq install curl make libgc-dev freeglut3-dev libxmu-dev
+  - sudo apt-get -y -qq install curl make libgc-dev
   - git clone --depth=1 git://github.com/nddrylliog/rock.git 
   - (cd rock && make -s quick-rescue)
   - export PATH=$PATH:$PWD/rock/bin
   - wget http://chipmunk-physics.net/release/ChipmunkLatest.tgz -O - | tar xz
   - mkdir prefix
   - cd Chipmunk-*
-  - cmake -DCMAKE_INSTALL_PREFIX=../prefix -DCMAKE_PREFIX_PATH=../prefix .
-  - make install -j
+  - cmake -DBUILD_DEMOS="false" -DCMAKE_INSTALL_PREFIX=../prefix -DCMAKE_PREFIX_PATH=../prefix .
+  - make install -j4
   - cd ..
 
 script:
