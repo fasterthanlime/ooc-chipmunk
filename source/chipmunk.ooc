@@ -6,13 +6,13 @@ INFINITY: extern Float
 
 CpFloat: cover from Double extends Double
 
-CpVect: proto cover from cpVect {
-    x, y: CpFloat
+CpVect: cover from cpVect {
+    x, y: extern CpFloat
 }
 
-CpMat2x2: proto cover from cpMat2x2 {
+CpMat2x2: cover from cpMat2x2 {
     // Row major [[a, b][c d]]
-    a, b, c, d: CpFloat
+    a, b, c, d: extern CpFloat
 }
 
 CpTimestamp: cover from cpTimestamp extends UInt
