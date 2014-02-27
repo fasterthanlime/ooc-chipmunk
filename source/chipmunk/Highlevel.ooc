@@ -17,6 +17,21 @@ Space: class {
         set(g) { cpSpace setGravity(g) }
     }
 
+    collisionBias: CpFloat {
+        get { cpSpace getCollisionBias() }
+        set(f) { cpSpace setCollisionBias(f) }
+    }
+
+    collisionPersistence: CpFloat {
+        get { cpSpace getCollisionPersistence() }
+        set(f) { cpSpace setCollisionPersistence(f) }
+    }
+
+    collisionSlop: CpFloat {
+        get { cpSpace getCollisionSlop() }
+        set(f) { cpSpace setCollisionSlop(f) }
+    }
+
     currentTimeStep: Double {
         get { cpSpace getCurrentTimeStep() }
     }
