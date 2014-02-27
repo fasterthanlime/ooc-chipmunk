@@ -78,12 +78,47 @@ Space: class {
 
 }
 
+HlCollisionHandler: class extends CpCollisionHandler {
+
+    onBegin: Func (Shape, Shape) -> Bool
+    onPreSolve: Func (Shape, Shape) -> Bool
+    onPostSolve: Func (Shape, Shape)
+    onSeparate: Func (Shape, Shape)
+
+    init: func {}
+
+    begin: func (arb: CpArbiter, space: CpSpace) -> Bool {
+        c := onBegin as Closure
+        if (!c thunk) {
+            return true
+        }
+
+        cpShape1, cpShape2: CpShape
+        arb getShapes(cpShape1&, cpShape2&)
+        onBegin(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
+    }
+
+    preSolve: func (arb: CpArbiter, space: CpSpace) -> Bool {
+        // overload at will!
+        true
+    }
+
+    postSolve: func (arb: CpArbiter, space: CpSpace) {
+        // overload at will!
+    }
+
+    separate: func (arb: CpArbiter, space: CpSpace) {
+        // overload at will!
+    }
+
+}
+
 Body: class {
 
     cpBody: CpBody
 
     userData: Pointer {
-        get { cpBody getUserData(p) }
+        get { cpBody getUserData() }
         set (p) { cpBody setUserData(p) }
     }
 
@@ -103,11 +138,13 @@ Body: class {
     }
 
     init: func (mass, moment: Double) {
-        cpBody = CpBody new(mass, moment)
+        init(CpBody new(mass, moment))
     }
 
     // internals
-    init: func ~fromBody (=cpBody)
+    init: func ~fromBody (=cpBody) {
+        userData = this
+    }
 
 }
 
@@ -115,11 +152,13 @@ Shape: abstract class {
 
     cpShape: CpShape
 
-    init: func (=cpShape)
+    init: func (=cpShape) {
+        userData = this
+    }
 
     userData: Pointer {
-        get { cpBody getUserData(p) }
-        set (p) { cpBody setUserData(p) }
+        get { cpShape getUserData() }
+        set (p) { cpShape setUserData(p) }
     }
 
     friction: Double {
