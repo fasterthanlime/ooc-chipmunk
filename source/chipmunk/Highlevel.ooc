@@ -181,17 +181,17 @@ Shape: abstract class {
     }
 
     collisionType: UInt {
-        get { cpShape getCollisionType() } 
+        get { cpShape getCollisionType() }
         set (t) { cpShape setCollisionType(t) }
     }
 
     group: UInt {
-        get { cpShape getGroup() } 
+        get { cpShape getGroup() }
         set (g) { cpShape setGroup(g) }
     }
 
     layers: UInt {
-        get { cpShape getLayers() } 
+        get { cpShape getLayers() }
         set (l) { cpShape setLayers(l) }
     }
 
