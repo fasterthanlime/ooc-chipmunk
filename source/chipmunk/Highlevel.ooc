@@ -72,11 +72,20 @@ Space: class {
         cpSpace removeShape(shape cpShape)
     }
 
+    addCollisionHandler: func (type1: CpCollisionType, type2: CpCollisionType, handler: CpCollisionHandler) {
+        cpSpace addCollisionHandler(type1, type2, handler)
+    }
+
 }
 
 Body: class {
 
     cpBody: CpBody
+
+    userData: Pointer {
+        get { cpBody getUserData(p) }
+        set (p) { cpBody setUserData(p) }
+    }
 
     pos: CpVect {
         get { cpBody getPos() }
@@ -107,6 +116,11 @@ Shape: abstract class {
     cpShape: CpShape
 
     init: func (=cpShape)
+
+    userData: Pointer {
+        get { cpBody getUserData(p) }
+        set (p) { cpBody setUserData(p) }
+    }
 
     friction: Double {
         get { cpShape getFriction() }
