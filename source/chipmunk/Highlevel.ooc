@@ -72,8 +72,12 @@ Space: class {
         cpSpace removeShape(shape cpShape)
     }
 
-    addCollisionHandler: func (type1: CpCollisionType, type2: CpCollisionType, handler: CpCollisionHandler) {
+    addCollisionHandler: func (type1: UInt, type2: UInt, handler: CpCollisionHandler) {
         cpSpace addCollisionHandler(type1, type2, handler)
+    }
+
+    removeCollisionHandler: func (type1: UInt, type2: UInt) {
+        cpSpace removeCollisionHandler(type1, type2)
     }
 
 }
@@ -99,16 +103,36 @@ HlCollisionHandler: class extends CpCollisionHandler {
     }
 
     preSolve: func (arb: CpArbiter, space: CpSpace) -> Bool {
-        // overload at will!
-        true
+        c := onPreSolve as Closure
+        if (!c thunk) {
+            return true
+        }
+
+        cpShape1, cpShape2: CpShape
+        arb getShapes(cpShape1&, cpShape2&)
+        onPreSolve(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
     }
 
     postSolve: func (arb: CpArbiter, space: CpSpace) {
-        // overload at will!
+        c := onPostSolve as Closure
+        if (!c thunk) {
+            return
+        }
+
+        cpShape1, cpShape2: CpShape
+        arb getShapes(cpShape1&, cpShape2&)
+        onPostSolve(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
     }
 
     separate: func (arb: CpArbiter, space: CpSpace) {
-        // overload at will!
+        c := onSeparate as Closure
+        if (!c thunk) {
+            return
+        }
+
+        cpShape1, cpShape2: CpShape
+        arb getShapes(cpShape1&, cpShape2&)
+        onSeparate(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
     }
 
 }
@@ -154,6 +178,21 @@ Shape: abstract class {
 
     init: func (=cpShape) {
         userData = this
+    }
+
+    collisionType: UInt {
+        get { cpShape getCollisionType() } 
+        set (t) { cpShape setCollisionType(t) }
+    }
+
+    group: UInt {
+        get { cpShape getGroup() } 
+        set (g) { cpShape setGroup(g) }
+    }
+
+    layers: UInt {
+        get { cpShape getLayers() } 
+        set (l) { cpShape setLayers(l) }
     }
 
     userData: Pointer {
