@@ -68,6 +68,11 @@ Body: class {
         set (p) { cpBody setPos(p) }
     }
 
+    vel: CpVect {
+        get { cpBody getVel() }
+        set (v) { cpBody setVel(v) }
+    }
+
     angle: Double {
         get { cpBody getAngle() }
         set (a) { cpBody setAngle(a) }
@@ -91,6 +96,14 @@ Shape: abstract class {
     friction: Double {
         get { cpShape getFriction() }
         set(f) { cpShape setFriction(f) }
+    }
+
+}
+
+PolyShape: class extends Shape {
+
+    init: func (body: Body, numVerts: Int, verts: CpVect*, offset: CpVect) {
+        super(CpPolyShape new(body cpBody, numVerts, verts, offset))
     }
 
 }
