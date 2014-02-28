@@ -321,5 +321,17 @@ CpUtils: class {
         cpMomentForBox(mass, width, height)
     }
 
+    momentForCircle: static func (mass: Double, innerRadius: Double, outerRadius: Double, offset: CpVect) -> Double {
+        cpMomentForCircle(mass, innerRadius, outerRadius, offset)
+    }
+
+    momentForSegment: static func (mass: Double, a, b: CpVect) -> Double {
+        cpMomentForSegment(mass, a, b)
+    }
+
+    momentForPoly: static func (mass: Double, numVerts: Int, verts: CpVect*, offset: CpVect) -> Double {
+        cpMomentForPoly(mass, numVerts, verts, offset)
+    }
+
 }
 
