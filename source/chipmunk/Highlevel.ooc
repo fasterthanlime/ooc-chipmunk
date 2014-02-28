@@ -283,6 +283,22 @@ BoxShape: class extends Shape {
 
 }
 
+CircleShape: class extends Shape {
+
+    init: func (body: Body, radius: Double, offset: CpVect) {
+        super(CpCircleShape new(body cpBody, radius, offset))
+    }
+
+    offset: CpVect {
+        get { (cpShape as CpCircleShape) getOffset() }
+    }
+
+    radius: Double {
+        get { (cpShape as CpCircleShape) getRadius() }
+    }
+
+}
+
 SegmentShape: class extends Shape {
 
     init: func (body: Body, a, b: CpVect, radius: Double) {
