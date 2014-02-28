@@ -92,7 +92,7 @@ CpBody: cover from cpBody* {
         f(body, arbiter)
     }
 
-    eachArbiter: func (f: func (CpBody, CpArbiter)) {
+    eachArbiter: func (f: Func (CpBody, CpArbiter)) {
         c := f as Closure
         _eachArbiter(_eachArbiterThunk, c&)
     }
