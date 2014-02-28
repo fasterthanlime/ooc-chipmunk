@@ -260,9 +260,25 @@ Shape: abstract class {
         set (p) { cpShape setUserData(p) }
     }
 
+    elasticity: Double {
+        get { cpShape getElasticity() }
+        set(e) { cpShape setElasticity(e) }
+    }
+
     friction: Double {
         get { cpShape getFriction() }
         set(f) { cpShape setFriction(f) }
+    }
+
+    body: Body {
+        get {
+            cpBody := cpShape getBody()
+            if (cpBody) {
+                return cpBody getUserData() as Body
+            }
+            null
+        }
+        set(b) { cpShape setBody(b cpBody) }
     }
 
 }

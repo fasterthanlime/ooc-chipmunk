@@ -92,7 +92,7 @@ CpBody: cover from cpBody* {
         f(body, arbiter)
     }
 
-    eachArbiter: func (f: Func(CpBody, CpArbiter)) {
+    eachArbiter: func (f: func (CpBody, CpArbiter)) {
         c := f as Closure
         _eachArbiter(_eachArbiterThunk, c&)
     }
@@ -266,19 +266,22 @@ CpShape: cover from cpShape* {
     getBB: extern(cpShapeGetBB) func -> CpBB
 
     getSensor: extern(cpShapeGetSensor) func -> Bool
-    setSensor: extern(cpShapeSetSensor) func(Bool)
+    setSensor: extern(cpShapeSetSensor) func (Bool)
+
+    getBody: extern(cpShapeGetBody) func -> CpBody
+    setBody: extern(cpShapeSetBody) func (body: CpBody)
 
     getElasticity: extern(cpShapeGetElasticity) func -> CpFloat
-    setElasticity: extern(cpShapeSetElasticity) func(CpFloat)
+    setElasticity: extern(cpShapeSetElasticity) func (CpFloat)
 
     getFriction: extern(cpShapeGetFriction) func -> CpFloat
-    setFriction: extern(cpShapeSetFriction) func(CpFloat)
+    setFriction: extern(cpShapeSetFriction) func (CpFloat)
 
     getSurfaceVelocity: extern(cpShapeGetSurfaceVelocity) func -> CpVect
-    setSurfaceVelocity: extern(cpShapeSetSurfaceVelocity) func(CpVect)
+    setSurfaceVelocity: extern(cpShapeSetSurfaceVelocity) func (CpVect)
 
     getUserData: extern(cpShapeGetUserData) func -> Pointer
-    setUserData: extern(cpShapeSetUserData) func(Pointer)
+    setUserData: extern(cpShapeSetUserData) func (Pointer)
 
     userDataIs?: func (c: Class) -> Bool {
         obj: Object = getUserData()
@@ -286,13 +289,13 @@ CpShape: cover from cpShape* {
     }
 
     getCollisionType: extern(cpShapeGetCollisionType) func -> CpCollisionType
-    setCollisionType: extern(cpShapeSetCollisionType) func(CpCollisionType)
+    setCollisionType: extern(cpShapeSetCollisionType) func (CpCollisionType)
 
     getGroup: extern(cpShapeGetGroup) func -> CpGroup
-    setGroup: extern(cpShapeSetGroup) func(CpGroup)
+    setGroup: extern(cpShapeSetGroup) func (CpGroup)
 
     getLayers: extern(cpShapeGetLayers) func -> CpLayers
-    setLayers: extern(cpShapeSetLayers) func(CpLayers)
+    setLayers: extern(cpShapeSetLayers) func (CpLayers)
 
     update: extern(cpShapeUpdate) func (pos: CpVect, rot: CpVect)
 
