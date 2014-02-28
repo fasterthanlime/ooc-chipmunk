@@ -191,7 +191,7 @@ CpArbiter: cover from cpArbiter* {
 
 }
 
-CpContactPointSet: proto cover from cpContactPointSet {
+CpContactPointSet: cover from cpContactPointSet {
     count: Int
     points: CpContactPoint*
 }
@@ -199,7 +199,7 @@ CpContactPointSet: proto cover from cpContactPointSet {
 CpContactPoint: cover {
     point: CpVect
     normal: CpVect
-    dist: Float
+    dist: Double
 }
 
 CpCollisionHandler: class {

@@ -16,8 +16,13 @@ Arbiter: class {
 
     init: func {}
 
-    contactPointSet: CpContactPointSet {
-        get { cpArbiter getContactPointSet() }
+    contactCount: Int {
+        get { cpArbiter getContactPointSet() count }
+    }
+
+    getContact: func (index: Int) -> CpContactPoint {
+        cpSet := cpArbiter getContactPointSet()
+        (cpSet points[index] point, cpSet points[index] normal, cpSet points[index] dist) as CpContactPoint
     }
 
     elasticity: Double {
