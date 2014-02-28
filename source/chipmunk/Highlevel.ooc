@@ -2,10 +2,66 @@
 use chipmunk
 import chipmunk
 
+ShapePair: cover {
+    a, b: Shape
+}
+
+BodyPair: cover {
+    a, b: Body
+}
+
+Arbiter: class {
+
+    cpArbiter: CpArbiter
+
+    init: func {}
+
+    contactPointSet: CpContactPointSet {
+        get { cpArbiter getContactPointSet() }
+    }
+
+    elasticity: Double {
+        get { cpArbiter getElasticity() }
+        set (f) { cpArbiter setElasticity(f) }
+    }
+
+    friction: Double {
+        get { cpArbiter getFriction() }
+        set (f) { cpArbiter setFriction(f) }
+    }
+
+    shapes: ShapePair {
+        get {
+            a, b: CpShape
+            cpArbiter getShapes(a&, b&)
+            ash := a getUserData() as Shape
+            bsh := b getUserData() as Shape
+            (ash, bsh) as ShapePair
+        }
+    }
+
+    bodies: BodyPair {
+        get {
+            a, b: CpBody
+            cpArbiter getBodies(a&, b&)
+            abo := a getUserData() as Body
+            bbo := b getUserData() as Body
+            (abo, bbo) as BodyPair
+        }
+    }
+
+}
+
 Space: class {
 
     cpSpace: CpSpace
     staticBody: Body
+    arbiter := Arbiter new()
+
+    userData: Pointer {
+        get { cpSpace getUserData() }
+        set (p) { cpSpace setUserData(p) }
+    }
 
     iterations: Int {
         get { cpSpace getIterations() }
@@ -38,6 +94,7 @@ Space: class {
 
     init: func {
         cpSpace = CpSpace new()
+        userData = this
         staticBody = Body new(cpSpace getStaticBody())
     }
 
@@ -84,55 +141,53 @@ Space: class {
 
 HlCollisionHandler: class extends CpCollisionHandler {
 
-    onBegin: Func (Shape, Shape) -> Bool
-    onPreSolve: Func (Shape, Shape) -> Bool
-    onPostSolve: Func (Shape, Shape)
-    onSeparate: Func (Shape, Shape)
+    arbiter := Arbiter new()
+
+    onBegin: Func (Arbiter) -> Bool
+    onPreSolve: Func (Arbiter) -> Bool
+    onPostSolve: Func (Arbiter)
+    onSeparate: Func (Arbiter)
 
     init: func {}
 
-    begin: func (arb: CpArbiter, space: CpSpace) -> Bool {
+    begin: func (cpArbiter: CpArbiter, space: CpSpace) -> Bool {
         c := onBegin as Closure
         if (!c thunk) {
             return true
         }
 
-        cpShape1, cpShape2: CpShape
-        arb getShapes(cpShape1&, cpShape2&)
-        onBegin(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
+        arbiter cpArbiter = cpArbiter
+        onBegin(arbiter)
     }
 
-    preSolve: func (arb: CpArbiter, space: CpSpace) -> Bool {
+    preSolve: func (cpArbiter: CpArbiter, space: CpSpace) -> Bool {
         c := onPreSolve as Closure
         if (!c thunk) {
             return true
         }
 
-        cpShape1, cpShape2: CpShape
-        arb getShapes(cpShape1&, cpShape2&)
-        onPreSolve(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
+        arbiter cpArbiter = cpArbiter
+        onPreSolve(arbiter)
     }
 
-    postSolve: func (arb: CpArbiter, space: CpSpace) {
+    postSolve: func (cpArbiter: CpArbiter, space: CpSpace) {
         c := onPostSolve as Closure
         if (!c thunk) {
             return
         }
 
-        cpShape1, cpShape2: CpShape
-        arb getShapes(cpShape1&, cpShape2&)
-        onPostSolve(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
+        arbiter cpArbiter = cpArbiter
+        onPostSolve(arbiter)
     }
 
-    separate: func (arb: CpArbiter, space: CpSpace) {
+    separate: func (cpArbiter: CpArbiter, space: CpSpace) {
         c := onSeparate as Closure
         if (!c thunk) {
             return
         }
 
-        cpShape1, cpShape2: CpShape
-        arb getShapes(cpShape1&, cpShape2&)
-        onSeparate(cpShape1 getUserData() as Shape, cpShape2 getUserData() as Shape)
+        arbiter cpArbiter = cpArbiter
+        onSeparate(arbiter)
     }
 
 }

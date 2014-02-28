@@ -132,8 +132,8 @@ CpSpace: cover from cpSpace* {
     getEnableContactGraph: extern(cpSpaceGetEnableContactGraph) func -> Bool
     setEnableContactGraph: extern(cpSpaceSetEnableContactGraph) func (Bool)
 
-    getData: extern(cpSpaceGetData) func -> Pointer
-    setData: extern(cpSpaceSetData) func (Pointer)
+    getUserData: extern(cpSpaceGetUserData) func -> Pointer
+    setUserData: extern(cpSpaceSetUserData) func (Pointer)
 
     getStaticBody: extern(cpSpaceGetStaticBody) func -> CpBody
 
@@ -191,7 +191,7 @@ CpArbiter: cover from cpArbiter* {
 
 }
 
-CpContactPointSet: cover from cpContactPointSet {
+CpContactPointSet: proto cover from cpContactPointSet {
     count: Int
     points: CpContactPoint*
 }
