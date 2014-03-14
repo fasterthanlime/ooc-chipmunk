@@ -86,6 +86,8 @@ CpBody: cover from cpBody* {
     getUserData: extern(cpBodyGetUserData) func -> Pointer
     setUserData: extern(cpBodySetUserData) func (Pointer)
 
+    applyImpulse: extern(cpBodyApplyImpulse) func (CpVect, CpVect)
+
     _eachArbiter: extern(cpBodyEachArbiter) func (callback: Pointer, data: Pointer)
     _eachArbiterThunk: static func (body: CpBody, arbiter: CpArbiter, data: Closure*) {
         f := data@ as Func (CpBody, CpArbiter)

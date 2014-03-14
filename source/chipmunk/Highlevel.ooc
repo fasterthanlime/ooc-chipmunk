@@ -221,6 +221,10 @@ Body: class {
         set (a) { cpBody setAngle(a) }
     }
 
+    applyImpulse: func (impulse, offset: CpVect) {
+        cpBody applyImpulse(impulse, offset)
+    }
+
     init: func (mass, moment: Double) {
         init(CpBody new(mass, moment))
     }
@@ -273,6 +277,11 @@ Shape: abstract class {
     friction: Double {
         get { cpShape getFriction() }
         set(f) { cpShape setFriction(f) }
+    }
+
+    surfaceVelocity: CpVect {
+        get { cpShape getSurfaceVelocity() }
+        set (v) { cpShape setSurfaceVelocity(v) }
     }
 
     body: Body {
