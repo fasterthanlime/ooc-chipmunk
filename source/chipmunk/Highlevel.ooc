@@ -244,6 +244,11 @@ Shape: abstract class {
         get { cpShape getCollisionType() }
         set (t) { cpShape setCollisionType(t) }
     }
+    
+    sensor: Bool {
+        get { cpShape getSensor() }
+        set (s) { cpShape setSensor(s) }
+    }
 
     group: UInt {
         get { cpShape getGroup() }
