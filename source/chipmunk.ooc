@@ -47,7 +47,9 @@ cpConvexHull: extern func (count: Int, verts: CpVect*, result: CpVect*, first: I
 CpBody: cover from cpBody* {
 
     new: extern(cpBodyNew) static func (mass: CpFloat, momentum: CpFloat) -> This
-    newStatic: extern (cpBodyNewStatic) static func -> This
+    newStatic: extern(cpBodyNewStatic) static func -> This
+
+    isStatic: extern(cpBodyIsStatic) func -> Bool
 
     free: extern(cpBodyFree) func
 

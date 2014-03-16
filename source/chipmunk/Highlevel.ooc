@@ -206,6 +206,10 @@ Body: class {
         set (p) { cpBody setUserData(p) }
     }
 
+    inert: Bool {
+        get { cpBody isStatic() }
+    }
+
     pos: CpVect {
         get { cpBody getPos() }
         set (p) { cpBody setPos(p) }
@@ -229,6 +233,10 @@ Body: class {
         init(CpBody new(mass, moment))
     }
 
+    init: func ~inert {
+        init(CpBody newStatic())
+    }
+
     // internals
     init: func ~fromBody (=cpBody) {
         userData = this
@@ -248,7 +256,7 @@ Shape: abstract class {
         get { cpShape getCollisionType() }
         set (t) { cpShape setCollisionType(t) }
     }
-    
+
     sensor: Bool {
         get { cpShape getSensor() }
         set (s) { cpShape setSensor(s) }
