@@ -47,7 +47,9 @@ cpConvexHull: extern func (count: Int, verts: CpVect*, result: CpVect*, first: I
 CpBody: cover from cpBody* {
 
     new: extern(cpBodyNew) static func (mass: CpFloat, momentum: CpFloat) -> This
-    newStatic: extern (cpBodyNewStatic) static func -> This
+    newStatic: extern(cpBodyNewStatic) static func -> This
+
+    isStatic: extern(cpBodyIsStatic) func -> Bool
 
     free: extern(cpBodyFree) func
 
@@ -86,13 +88,15 @@ CpBody: cover from cpBody* {
     getUserData: extern(cpBodyGetUserData) func -> Pointer
     setUserData: extern(cpBodySetUserData) func (Pointer)
 
+    applyImpulse: extern(cpBodyApplyImpulse) func (CpVect, CpVect)
+
     _eachArbiter: extern(cpBodyEachArbiter) func (callback: Pointer, data: Pointer)
     _eachArbiterThunk: static func (body: CpBody, arbiter: CpArbiter, data: Closure*) {
         f := data@ as Func (CpBody, CpArbiter)
         f(body, arbiter)
     }
 
-    eachArbiter: func (f: Func(CpBody, CpArbiter)) {
+    eachArbiter: func (f: Func (CpBody, CpArbiter)) {
         c := f as Closure
         _eachArbiter(_eachArbiterThunk, c&)
     }
@@ -132,8 +136,8 @@ CpSpace: cover from cpSpace* {
     getEnableContactGraph: extern(cpSpaceGetEnableContactGraph) func -> Bool
     setEnableContactGraph: extern(cpSpaceSetEnableContactGraph) func (Bool)
 
-    getData: extern(cpSpaceGetData) func -> Pointer
-    setData: extern(cpSpaceSetData) func (Pointer)
+    getUserData: extern(cpSpaceGetUserData) func -> Pointer
+    setUserData: extern(cpSpaceSetUserData) func (Pointer)
 
     getStaticBody: extern(cpSpaceGetStaticBody) func -> CpBody
 
@@ -199,7 +203,7 @@ CpContactPointSet: cover from cpContactPointSet {
 CpContactPoint: cover {
     point: CpVect
     normal: CpVect
-    dist: Float
+    dist: Double
 }
 
 CpCollisionHandler: class {
@@ -266,19 +270,22 @@ CpShape: cover from cpShape* {
     getBB: extern(cpShapeGetBB) func -> CpBB
 
     getSensor: extern(cpShapeGetSensor) func -> Bool
-    setSensor: extern(cpShapeSetSensor) func(Bool)
+    setSensor: extern(cpShapeSetSensor) func (Bool)
+
+    getBody: extern(cpShapeGetBody) func -> CpBody
+    setBody: extern(cpShapeSetBody) func (body: CpBody)
 
     getElasticity: extern(cpShapeGetElasticity) func -> CpFloat
-    setElasticity: extern(cpShapeSetElasticity) func(CpFloat)
+    setElasticity: extern(cpShapeSetElasticity) func (CpFloat)
 
     getFriction: extern(cpShapeGetFriction) func -> CpFloat
-    setFriction: extern(cpShapeSetFriction) func(CpFloat)
+    setFriction: extern(cpShapeSetFriction) func (CpFloat)
 
     getSurfaceVelocity: extern(cpShapeGetSurfaceVelocity) func -> CpVect
-    setSurfaceVelocity: extern(cpShapeSetSurfaceVelocity) func(CpVect)
+    setSurfaceVelocity: extern(cpShapeSetSurfaceVelocity) func (CpVect)
 
     getUserData: extern(cpShapeGetUserData) func -> Pointer
-    setUserData: extern(cpShapeSetUserData) func(Pointer)
+    setUserData: extern(cpShapeSetUserData) func (Pointer)
 
     userDataIs?: func (c: Class) -> Bool {
         obj: Object = getUserData()
@@ -286,13 +293,13 @@ CpShape: cover from cpShape* {
     }
 
     getCollisionType: extern(cpShapeGetCollisionType) func -> CpCollisionType
-    setCollisionType: extern(cpShapeSetCollisionType) func(CpCollisionType)
+    setCollisionType: extern(cpShapeSetCollisionType) func (CpCollisionType)
 
     getGroup: extern(cpShapeGetGroup) func -> CpGroup
-    setGroup: extern(cpShapeSetGroup) func(CpGroup)
+    setGroup: extern(cpShapeSetGroup) func (CpGroup)
 
     getLayers: extern(cpShapeGetLayers) func -> CpLayers
-    setLayers: extern(cpShapeSetLayers) func(CpLayers)
+    setLayers: extern(cpShapeSetLayers) func (CpLayers)
 
     update: extern(cpShapeUpdate) func (pos: CpVect, rot: CpVect)
 
