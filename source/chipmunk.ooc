@@ -309,6 +309,11 @@ CpSegmentShape: cover from cpSegmentShape* extends CpShape {
 
     new: static extern(cpSegmentShapeNew) func (body: CpBody, a: CpVect, b: CpVect, radius: CpFloat) -> This
 
+    setNeighbors: extern(cpSegmentShapeSetNeighbors) func (a: CpVect, b: CpVect)
+
+    getA: extern(cpSegmentShapeGetA) func -> CpVect
+    getB: extern(cpSegmentShapeGetB) func -> CpVect
+
 }
 
 CpCircleShape: cover from cpCircleShape* extends CpShape {

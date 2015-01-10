@@ -343,6 +343,18 @@ SegmentShape: class extends Shape {
         super(CpSegmentShape new(body cpBody, a, b, radius))
     }
 
+    setNeighbors: func (a, b: CpVect) {
+        (cpShape as CpSegmentShape) setNeighbors(a, b)
+    }
+
+    a: CpVect {
+        get { (cpShape as CpSegmentShape) getA() }
+    }
+
+    b: CpVect {
+        get { (cpShape as CpSegmentShape) getB() }
+    }
+
 }
 
 CpUtils: class {
