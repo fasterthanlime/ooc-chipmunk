@@ -22,12 +22,14 @@ Arbiter: class {
 
     getContact: func (index: Int) -> CpContactPoint {
         cpSet := cpArbiter getContactPointSet()
-        (cpSet points[index] point, cpSet points[index] normal, cpSet points[index] dist) as CpContactPoint
+        p: CpContactPoint
+        memcpy(p&, cpSet points + index, CpContactPoint size)
+        p
     }
 
-    elasticity: Double {
-        get { cpArbiter getElasticity() }
-        set (f) { cpArbiter setElasticity(f) }
+    restitution: Double {
+        get { cpArbiter getRestitution() }
+        set (f) { cpArbiter setRestitution(f) }
     }
 
     friction: Double {
@@ -125,21 +127,12 @@ Space: class {
         shape
     }
 
-    addStaticShape: func (shape: Shape) -> Shape {
-        cpSpace addStaticShape(shape cpShape)
-        shape
-    }
-
     removeShape: func (shape: Shape) {
         cpSpace removeShape(shape cpShape)
     }
 
-    addCollisionHandler: func (type1: UInt, type2: UInt, handler: CpCollisionHandler) {
+    addCollisionHandler: func (type1: UInt, type2: UInt, handler: CollisionHandler) {
         cpSpace addCollisionHandler(type1, type2, handler)
-    }
-
-    removeCollisionHandler: func (type1: UInt, type2: UInt) {
-        cpSpace removeCollisionHandler(type1, type2)
     }
 
 }
@@ -211,13 +204,13 @@ Body: class {
     }
 
     pos: CpVect {
-        get { cpBody getPos() }
-        set (p) { cpBody setPos(p) }
+        get { cpBody getPosition() }
+        set (p) { cpBody setPosition(p) }
     }
 
     vel: CpVect {
-        get { cpBody getVel() }
-        set (v) { cpBody setVel(v) }
+        get { cpBody getVelocity() }
+        set (v) { cpBody setVelocity(v) }
     }
 
     angle: Double {
@@ -225,8 +218,12 @@ Body: class {
         set (a) { cpBody setAngle(a) }
     }
 
-    applyImpulse: func (impulse, offset: CpVect) {
-        cpBody applyImpulse(impulse, offset)
+    applyImpulseAtWorldPoint: func (impulse, offset: CpVect) {
+        cpBody applyImpulseAtWorldPoint(impulse, offset)
+    }
+
+    applyImpulseAtLocalPoint: func (impulse, offset: CpVect) {
+        cpBody applyImpulseAtLocalPoint(impulse, offset)
     }
 
     init: func (mass, moment: Double) {
@@ -262,14 +259,9 @@ Shape: abstract class {
         set (s) { cpShape setSensor(s) }
     }
 
-    group: UInt {
-        get { cpShape getGroup() }
-        set (g) { cpShape setGroup(g) }
-    }
-
-    layers: UInt {
-        get { cpShape getLayers() }
-        set (l) { cpShape setLayers(l) }
+    filter: CpShapeFilter {
+        get { cpShape getFilter() }
+        set (g) { cpShape setFilter(g) }
     }
 
     userData: Pointer {
@@ -307,16 +299,16 @@ Shape: abstract class {
 
 PolyShape: class extends Shape {
 
-    init: func (body: Body, numVerts: Int, verts: CpVect*, offset: CpVect) {
-        super(CpPolyShape new(body cpBody, numVerts, verts, offset))
+    init: func (body: Body, numVerts: Int, verts: CpVect*, transform: CpTransform, radius: CpFloat) {
+        super(CpPolyShape new(body cpBody, numVerts, verts, transform, radius))
     }
 
 }
 
 BoxShape: class extends Shape {
 
-    init: func (body: Body, width, height: Double) {
-        super(CpBoxShape new(body cpBody, width, height))
+    init: func (body: Body, width, height: Double, radius: CpFloat) {
+        super(CpBoxShape new(body cpBody, width, height, radius))
     }
 
 }
@@ -375,13 +367,15 @@ CpUtils: class {
         cpMomentForCircle(mass, innerRadius, outerRadius, offset)
     }
 
-    momentForSegment: static func (mass: Double, a, b: CpVect) -> Double {
-        cpMomentForSegment(mass, a, b)
+    momentForSegment: static func (mass: Double, a, b: CpVect, radius: CpFloat) -> Double {
+        cpMomentForSegment(mass, a, b, radius)
     }
 
-    momentForPoly: static func (mass: Double, numVerts: Int, verts: CpVect*, offset: CpVect) -> Double {
-        cpMomentForPoly(mass, numVerts, verts, offset)
+    momentForPoly: static func (mass: Double, numVerts: Int, verts: CpVect*, offset: CpVect, radius: CpFloat) -> Double {
+        cpMomentForPoly(mass, numVerts, verts, offset, radius)
     }
+
+    identity := static cpTransformIdentity
 
 }
 

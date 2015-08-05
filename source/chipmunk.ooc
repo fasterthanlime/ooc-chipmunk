@@ -15,6 +15,15 @@ CpMat2x2: cover from cpMat2x2 {
     a, b, c, d: extern CpFloat
 }
 
+CpTransform: cover from cpTransform {
+    // (a, b) is the x basis vector.
+    // (c, d) is the y basis vector.
+    // (tx, ty) is the translation.
+    a, b, c, d, tx, ty: extern CpFloat
+}
+
+cpTransformIdentity: extern CpTransform
+
 CpTimestamp: cover from cpTimestamp extends UInt
 
 cpv: extern func (x, y: CpFloat) -> CpVect
@@ -26,11 +35,11 @@ cpMomentForCircle: extern func (mass: CpFloat, radius1: CpFloat, radius2: CpFloa
 
 cpAreaForCircle: extern func (radius1: CpFloat, radius2: CpFloat) -> CpFloat 
 
-cpMomentForSegment: extern func (mass: CpFloat, a: CpVect, b: CpVect) -> CpFloat
+cpMomentForSegment: extern func (mass: CpFloat, a: CpVect, b: CpVect, radius: CpFloat) -> CpFloat
 
 cpAreaForSegment: extern func (a: CpVect, b: CpVect, radius: CpFloat) -> CpFloat
 
-cpMomentForPoly: extern func (mass: CpFloat, numVerts: Int, verts: CpVect*, offset: CpVect) -> CpFloat
+cpMomentForPoly: extern func (mass: CpFloat, numVerts: Int, verts: CpVect*, offset: CpVect, radius: CpFloat) -> CpFloat
 
 cpAreaForPoly: extern func (numVerts: Int, verts: CpVect*) -> CpFloat
 
@@ -44,12 +53,20 @@ cpMomentForBox2: extern func (mass: CpFloat, box: CpBB) -> CpFloat
 
 cpConvexHull: extern func (count: Int, verts: CpVect*, result: CpVect*, first: Int*, tolerance: CpFloat) -> Int
 
+CpBodyType: enum {
+    dynamic: extern(CP_BODY_TYPE_DYNAMIC)
+    kinematic: extern(CP_BODY_TYPE_KINEMATIC)
+    statik: extern(CP_BODY_TYPE_STATIC)
+}
+
 CpBody: cover from cpBody* {
 
     new: extern(cpBodyNew) static func (mass: CpFloat, momentum: CpFloat) -> This
     newStatic: extern(cpBodyNewStatic) static func -> This
 
-    isStatic: extern(cpBodyIsStatic) func -> Bool
+    isStatic: func -> Bool { getType() == CpBodyType statik }
+
+    getType: extern(cpBodyGetType) func -> CpBodyType
 
     free: extern(cpBodyFree) func
 
@@ -59,11 +76,11 @@ CpBody: cover from cpBody* {
     getMoment: extern(cpBodyGetMoment) func -> CpFloat
     setMoment: extern(cpBodySetMoment) func (CpFloat)
 
-    getPos: extern(cpBodyGetPos) func -> CpVect
-    setPos: extern(cpBodySetPos) func (CpVect)
+    getPosition: extern(cpBodyGetPosition) func -> CpVect
+    setPosition: extern(cpBodySetPosition) func (CpVect)
 
-    getVel: extern(cpBodyGetVel) func -> CpVect
-    setVel: extern(cpBodySetVel) func (CpVect)
+    getVelocity: extern(cpBodyGetVelocity) func -> CpVect
+    setVelocity: extern(cpBodySetVelocity) func (CpVect)
 
     getForce: extern(cpBodyGetForce) func -> CpVect
     setForce: extern(cpBodySetForce) func (CpVect)
@@ -88,7 +105,8 @@ CpBody: cover from cpBody* {
     getUserData: extern(cpBodyGetUserData) func -> Pointer
     setUserData: extern(cpBodySetUserData) func (Pointer)
 
-    applyImpulse: extern(cpBodyApplyImpulse) func (CpVect, CpVect)
+    applyImpulseAtWorldPoint: extern(cpBodyApplyImpulseAtWorldPoint) func (CpVect, CpVect)
+    applyImpulseAtLocalPoint: extern(cpBodyApplyImpulseAtLocalPoint) func (CpVect, CpVect)
 
     _eachArbiter: extern(cpBodyEachArbiter) func (callback: Pointer, data: Pointer)
     _eachArbiterThunk: static func (body: CpBody, arbiter: CpArbiter, data: Closure*) {
@@ -147,7 +165,6 @@ CpSpace: cover from cpSpace* {
     removeBody: extern(cpSpaceRemoveBody) func (constraint: CpBody)
 
     addShape: extern(cpSpaceAddShape) func (shape: CpShape) -> CpShape
-    addStaticShape: extern(cpSpaceAddStaticShape) func (shape: CpShape) -> CpShape
     removeShape: extern(cpSpaceRemoveShape) func (constraint: CpShape)
 
     reindexShape: extern(cpSpaceReindexShape) func (shape: CpShape)
@@ -155,19 +172,14 @@ CpSpace: cover from cpSpace* {
     addConstraint: extern(cpSpaceAddConstraint) func (constraint: CpConstraint) -> CpConstraint
     removeConstraint: extern(cpSpaceRemoveConstraint) func (constraint: CpConstraint)
 
-    addCollisionHandler: func (type1: CpCollisionType, type2: CpCollisionType, handler: CpCollisionHandler) {
-        cpSpaceAddCollisionHandler(
-            this, 
-            type1,
-            type2,
-            collisionBeginFuncThunk,
-            collisionPreSolveFuncThunk,
-            collisionPostSolveFuncThunk,
-            collisionSeparateFuncThunk,
-            handler
-        )
+    addCollisionHandler: func (type1: CpCollisionType, type2: CpCollisionType, handler: CollisionHandler) {
+        cph := cpSpaceAddCollisionHandler(this, type1, type2)
+        cph@ beginFunc = collisionBeginFuncThunk
+        cph@ preSolveFunc = collisionPreSolveFuncThunk
+        cph@ postSolveFunc = collisionPostSolveFuncThunk
+        cph@ separateFunc = collisionSeparateFuncThunk
+        cph@ userData = handler
     }
-    removeCollisionHandler: extern(cpSpaceRemoveCollisionHandler) func (type1: CpCollisionType, type2: CpCollisionType)
 
     shapeQuery: extern(cpSpaceShapeQuery) func (shape: CpShape, callback: Pointer, userData: Pointer) -> Bool
 
@@ -175,15 +187,15 @@ CpSpace: cover from cpSpace* {
 
 }
 
-cpSpaceAddCollisionHandler: extern func (CpSpace, CpCollisionType, CpCollisionType, Pointer, Pointer, Pointer, Pointer, Pointer)
+cpSpaceAddCollisionHandler: extern func (CpSpace, CpCollisionType, CpCollisionType) -> CpCollisionHandler*
 
 CpArbiter: cover from cpArbiter* {
 
     getShapes: extern(cpArbiterGetShapes) func (CpShape*, CpShape*)
     getBodies: extern(cpArbiterGetBodies) func (CpBody*, CpBody*)
 
-    getElasticity: extern(cpArbiterGetElasticity) func -> CpFloat
-    setElasticity: extern(cpArbiterSetElasticity) func (CpFloat)
+    getRestitution: extern(cpArbiterGetRestitution) func -> CpFloat
+    setRestitution: extern(cpArbiterSetRestitution) func (CpFloat)
 
     getFriction: extern(cpArbiterGetFriction) func -> CpFloat
     setFriction: extern(cpArbiterSetFriction) func (CpFloat)
@@ -201,12 +213,21 @@ CpContactPointSet: cover from cpContactPointSet {
 }
 
 CpContactPoint: cover {
-    point: CpVect
-    normal: CpVect
-    dist: Double
+    pointA: CpVect
+    pointB: CpVect
+    distance: Double
 }
 
-CpCollisionHandler: class {
+CpCollisionHandler: cover {
+    typeA, typeB: Int
+    beginFunc: Pointer
+    preSolveFunc: Pointer
+    postSolveFunc: Pointer
+    separateFunc: Pointer
+    userData: Pointer
+}
+
+CollisionHandler: class {
 
     begin: func (arb: CpArbiter, space: CpSpace) -> Bool {
         // overload at will!
@@ -228,19 +249,19 @@ CpCollisionHandler: class {
     
 }
 
-collisionBeginFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Int {
+collisionBeginFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CollisionHandler) -> Int {
     ch begin(arb, space) ? 1 : 0
 }
 
-collisionPreSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) -> Int {
+collisionPreSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CollisionHandler) -> Int {
     ch preSolve(arb, space) ? 1 : 0
 }
 
-collisionPostSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+collisionPostSolveFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CollisionHandler) {
     ch postSolve(arb, space)
 }
 
-collisionSeparateFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CpCollisionHandler) {
+collisionSeparateFuncThunk: func (arb: CpArbiter, space: CpSpace, ch: CollisionHandler) {
     ch separate(arb, space)
 }
 
@@ -259,8 +280,22 @@ CpGroup: cover from UInt extends UInt {
 
 }
 
-CpLayers: cover from UInt extends UInt {
+CpBitmask: cover from UInt extends UInt {
 
+}
+
+CpShapeFilter: cover from cpShapeFilter {
+	// Two objects with the same non-zero group value do not collide.
+	// This is generally used to group objects in a composite object together to disable self collisions.
+    group: CpGroup
+
+	// A bitmask of user definable categories that this object belongs to.
+	// The category/mask combinations of both objects in a collision must agree for a collision to occur.
+    categories: CpBitmask
+
+	// A bitmask of user definable category types that this object object collides with.
+	// The category/mask combinations of both objects in a collision must agree for a collision to occur.
+    mask: CpBitmask
 }
 
 CpShape: cover from cpShape* {
@@ -295,11 +330,8 @@ CpShape: cover from cpShape* {
     getCollisionType: extern(cpShapeGetCollisionType) func -> CpCollisionType
     setCollisionType: extern(cpShapeSetCollisionType) func (CpCollisionType)
 
-    getGroup: extern(cpShapeGetGroup) func -> CpGroup
-    setGroup: extern(cpShapeSetGroup) func (CpGroup)
-
-    getLayers: extern(cpShapeGetLayers) func -> CpLayers
-    setLayers: extern(cpShapeSetLayers) func (CpLayers)
+    getFilter: extern(cpShapeGetFilter) func -> CpShapeFilter
+    setFilter: extern(cpShapeSetFilter) func (CpShapeFilter)
 
     update: extern(cpShapeUpdate) func (pos: CpVect, rot: CpVect)
 
@@ -328,14 +360,14 @@ CpCircleShape: cover from cpCircleShape* extends CpShape {
 
 CpBoxShape: cover from cpPolyShape* extends CpShape {
 
-    new: static extern(cpBoxShapeNew) func (body: CpBody, width: CpFloat, height: CpFloat) -> This
-    new: static extern(cpBoxShapeNew2) func ~fromBB (body: CpBody, box: CpBB) -> This
+    new: static extern(cpBoxShapeNew) func (body: CpBody, width: CpFloat, height: CpFloat, radius: CpFloat) -> This
+    new: static extern(cpBoxShapeNew2) func ~fromBB (body: CpBody, box: CpBB, radius: CpFloat) -> This
 
 }
 
 CpPolyShape: cover from cpPolyShape* extends CpShape {
 
-    new: static extern(cpPolyShapeNew) func (body: CpBody, numVerts: Int, verts: CpVect*, offset: CpVect) -> This
+    new: static extern(cpPolyShapeNew) func (body: CpBody, numVerts: Int, verts: CpVect*, transform: CpTransform, radius: CpFloat) -> This
 
 }
 
