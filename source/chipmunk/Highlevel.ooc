@@ -59,6 +59,12 @@ Arbiter: class {
 
 }
 
+shapeQueryThunk: func (shape: CpShape, points: CpContactPointSet, data: Pointer) {
+    closure := (data as Closure*)@
+    callback := closure as Func(CpShape, CpContactPointSet)
+    callback(shape, points)
+}
+
 Space: class {
 
     cpSpace: CpSpace
@@ -133,6 +139,12 @@ Space: class {
 
     addCollisionHandler: func (type1: UInt, type2: UInt, handler: CollisionHandler) {
         cpSpace addCollisionHandler(type1, type2, handler)
+    }
+
+    shapeQuery: func (shape: Shape, callback: Func) -> Bool {
+        data := gc_malloc(Closure size) as Closure*
+        memcpy(data, (callback as Closure)&, Closure size)
+        cpSpace shapeQuery(shape cpShape, shapeQueryThunk, data)
     }
 
 }
