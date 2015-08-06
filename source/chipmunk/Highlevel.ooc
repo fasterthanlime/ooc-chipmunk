@@ -157,7 +157,7 @@ Space: class {
 
 }
 
-HlCollisionHandler: class extends CpCollisionHandler {
+HlCollisionHandler: class extends CollisionHandler {
 
     arbiter := Arbiter new()
 
