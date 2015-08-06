@@ -141,7 +141,7 @@ Space: class {
         cpSpace addCollisionHandler(type1, type2, handler)
     }
 
-    shapeQuery: func (shape: Shape, callback: Func) -> Bool {
+    shapeQuery: func (shape: Shape, callback: Func (CpShape, CpContactPointSet)) -> Bool {
         data := gc_malloc(Closure size) as Closure*
         memcpy(data, (callback as Closure)&, Closure size)
         cpSpace shapeQuery(shape cpShape, shapeQueryThunk, data)
