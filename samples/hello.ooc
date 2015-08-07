@@ -35,7 +35,7 @@ main: func {
     // The cpSpaceAdd*() functions return the thing that you are adding.
     // It's convenient to create and add an object in one line.
     ballBody := space addBody(CpBody new(mass, moment))
-    ballBody setPos(cpv(0, 15))
+    ballBody setPosition(cpv(0, 15))
 
     // Now we create the collision shape for the ball.
     // You can create multiple collision shapes that point to the same body.
@@ -50,9 +50,9 @@ main: func {
     time: CpFloat = 0
 
     while(time < 2) {
-	pos := ballBody getPos()
-	vel := ballBody getVel()
-	printf("Time is %5.2f. ballBody is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
+	pos := ballBody getPosition()
+	vel := ballBody getVelocity()
+	printf("Time is %5.2f. ballBody is at (%5.2f, %5.2f). Its velocity is (%5.2f, %5.2f)\n",
 	  time, pos x, pos y, vel x, vel y
 	)
 

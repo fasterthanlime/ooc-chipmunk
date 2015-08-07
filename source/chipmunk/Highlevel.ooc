@@ -59,12 +59,13 @@ Arbiter: class {
 
 }
 
-shapeQueryThunk: func (shape: CpShape, points: CpContactPointSet*, handler: ShapeQueryHandler) {
-    handler f(points@)
+shapeQueryThunk: func (cpShape: CpShape, points: CpContactPointSet*, handler: ShapeQueryHandler) {
+    shape := cpShape getUserData() as Shape
+    handler f(points@, shape)
 }
 
 ShapeQueryHandler: class {
-    f: Func (CpContactPointSet)
+    f: Func (CpContactPointSet, Shape)
 
     init: func (=f)
 }
@@ -145,14 +146,12 @@ Space: class {
         cpSpace addCollisionHandler(type1, type2, handler)
     }
 
-    shapeQuery: func (shape: Shape, callback: Func (CpContactPointSet)) -> Bool {
+    shapeQuery: func (shape: Shape, callback: Func (CpContactPointSet, Shape)) -> Bool {
         cpSpace shapeQuery(shape cpShape, shapeQueryThunk, ShapeQueryHandler new(callback))
     }
 
     shapeCollides: func (shape: Shape) -> Bool {
-        cpSpace shapeQuery(shape cpShape, shapeQueryThunk, ShapeQueryHandler new(|points|
-            // muffin
-        ))
+        cpSpace shapeQuery(shape cpShape, null, null)
     }
 
 }
