@@ -142,7 +142,7 @@ Space: class {
         cpSpace removeShape(shape cpShape)
     }
 
-    addCollisionHandler: func (type1: UInt, type2: UInt, handler: CollisionHandler) {
+    addCollisionHandler: func (type1: SizeT, type2: SizeT, handler: CollisionHandler) {
         cpSpace addCollisionHandler(type1, type2, handler)
     }
 
@@ -268,7 +268,7 @@ Shape: abstract class {
         userData = this
     }
 
-    collisionType: UInt {
+    collisionType: SizeT {
         get { cpShape getCollisionType() }
         set (t) { cpShape setCollisionType(t) }
     }

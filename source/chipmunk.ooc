@@ -218,8 +218,8 @@ CpContactPoint: cover {
     distance: Double
 }
 
-CpCollisionHandler: cover {
-    typeA, typeB: Int
+CpCollisionHandler: cover from cpCollisionHandler {
+    typeA, typeB: SizeT
     beginFunc: Pointer
     preSolveFunc: Pointer
     postSolveFunc: Pointer
@@ -272,11 +272,11 @@ CpBB: cover from cpBB {
 
 }
 
-CpCollisionType: cover from UInt extends UInt {
+CpCollisionType: cover from SizeT extends SizeT {
 
 }
 
-CpGroup: cover from UInt extends UInt {
+CpGroup: cover from SizeT extends SizeT {
 
 }
 
